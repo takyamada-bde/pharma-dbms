@@ -1,3 +1,41 @@
+[project]
+name = "pharma-dbms-notebooks"
+version = "0.1.0"
+description = "Notebooks for pharma-dbms"
+requires-python = ">=3.12"
+dependencies = [
+    "uuid6",
+    "structlog",
+    "line_profiler",
+    "memory_profiler",
+    "numpy",
+    "matplotlib",
+    "openpyxl",
+    "pandas[performance, plot, computation, excel, xml]",
+    "polars-lts-cpu",
+    "ibis-framework[pandas, polars]",
+    "seaborn",
+    "requests",
+    "jupyterlab",
+    "ipywidgets",
+    "ipympl",
+    "pandera[pandas, polars, ibis]",
+    "rdkit",
+]
+
+[dependency-groups]
+dev = [
+    "black",
+    "ruff",
+    "mypy",
+    "tox",
+    "pandera[mypy]",
+    "zensical",
+    "pytest",
+    "pytest-snapshot",
+    "ipytest",
+]
+
 [tool.tox]
 legacy_tox_ini = """
     [tox]
@@ -20,12 +58,6 @@ legacy_tox_ini = """
     commands = mypy .
 """
 
-[tool.pytest.ini_options]
-python_files = ["test_*.py"]
-testpaths = ["tests"]
-pythonpath = ['src', 'tests']
-norecursedirs = '.venv'
-
 [tool.ruff]
 lint.ignore = ['E501']
 lint.select = [
@@ -40,3 +72,9 @@ src = ['.']
 
 [tool.ruff.format]
 quote-style = 'single'
+
+[tool.pytest.ini_options]
+python_files = ["test_*.py"]
+testpaths = ["tests"]
+pythonpath = ['src', 'tests']
+norecursedirs = '.venv'
