@@ -20,16 +20,12 @@ services:
     container_name: django
     build:
       context: ./app
-      dockerfile: ../dockerfiles/django/Dockerfile
-      args:
-        DIR_WORK: "/usr/src"
-        ENV_YAML: "environment.dev.yaml"
-        VENV: "dbms-django-dev"
+      dockerfile: ../dockerfiles/django/Dockerfile.dev
     command: >
-      sh -c "mamba run -n dbms-django-dev python manage.py collectstatic --noinput &&
-             mamba run -n dbms-django-dev gunicorn config.wsgi.dev:application --bind 0.0.0.0:8000"
+      sh -c "python manage.py collectstatic --noinput &&
+             gunicorn config.wsgi.dev:application --bind 0.0.0.0:8000"
     volumes:
-      - ./app:/usr/src
+      - ./app:/app
     expose:
       - "8000"
     env_file:

@@ -1,3 +1,44 @@
+[project]
+name = "pharma-dbms-app"
+version = "0.1.0"
+description = "A django application for managing pharmaceutical databases."
+requires-python = ">=3.12"
+dependencies = [
+    "django=5.2",
+    "django-ninja",
+    "uuid6",
+    "structlog",
+    "psycopg",
+    "uvicorn",
+    "gunicorn",
+    "django-auditlog",
+    "django-environ",
+    "django-extensions",
+    "django-filter",
+    "django-guardian",
+    "django-import-export",
+    "django-silk",
+    "django-structlog",
+    "sentry-sdk",
+    "rdkit",
+]
+
+[dependency-groups]
+dev = [
+    "black",
+    "ruff",
+    "mypy",
+    "tox",
+    "zensical",
+    "django-debug-toolbar",
+    "factory_boy",
+    "pytest",
+    "pytest-cov",
+    "pytest-django",
+    "pytest-factoryboy",
+    "pytest-randomly",
+]
+
 [tool.tox]
 legacy_tox_ini = """
     [tox]
@@ -27,12 +68,6 @@ legacy_tox_ini = """
     commands = pytest
 """
 
-[tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "config.settings.test"
-python_files = ["test_*.py"]
-addopts = "-v --reuse-db"
-django_debug_mode = true
-
 [tool.ruff]
 lint.ignore = ['E501']
 lint.select = [
@@ -47,3 +82,9 @@ src = ['.']
 
 [tool.ruff.format]
 quote-style = 'single'
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.test"
+python_files = ["test_*.py"]
+addopts = "-v --reuse-db"
+django_debug_mode = true

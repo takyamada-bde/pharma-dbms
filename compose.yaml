@@ -21,13 +21,9 @@ services:
     build:
       context: ./app
       dockerfile: ../dockerfiles/django/Dockerfile
-      args:
-        DIR_WORK: "/usr/src"
-        ENV_YAML: "environment.yaml"
-        VENV: "dbms-django"
-    command: mamba run -n dbms-django gunicorn config.wsgi.prod:application --bind 0.0.0.0:8000
+    command: gunicorn config.wsgi.prod:application --bind 0.0.0.0:8000
     volumes:
-      - ./app:/usr/src
+      - ./app:/app
     expose:
       - "8000"
     env_file:
