@@ -9,7 +9,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: ci
     services:
       postgres:
@@ -27,28 +27,37 @@ jobs:
     strategy:
       max-parallel: 4
       matrix:
-        python-version: [3.13]
+        python-version: [3.12]
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up Miniconda
-      uses: conda-incubator/setup-miniconda@v2
-      with:
-        auto-activate-base: false
-        python-version: ${{ matrix.python-version }}
-        environment-file: app/environment.dev.yaml
-        activate-environment: dbms-django-dev
-    - name: Run Tests
-      working-directory: app
-      env:
-        DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
-        DATABASE_USER: ${{ secrets.POSTGRES_USER }}
-        DATABASE_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-        DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
-        DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
-        DATABASE_SCHEMA: ${{ secrets.DATABASE_SCHEMA }}
-      run: |
-        conda run -n dbms-django-dev python manage.py makemigrations accounts
-        conda run -n dbms-django-dev python manage.py migrate accounts
-        conda run -n dbms-django-dev python manage.py migrate
-        conda run -n dbms-django-dev pytest
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
+        with:
+          enable-cache: true
+          cache-dependency-glob: "app/uv.lock"
+
+      - name: Install dependencies
+        working-directory: app
+        run: uv sync --frozen --group dev
+
+      - name: Run Tests
+        working-directory: app
+        env:
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+          DATABASE_USER: ${{ secrets.POSTGRES_USER }}
+          DATABASE_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          DATABASE_HOST: ${{ secrets.DATABASE_HOST }}
+          DATABASE_PORT: ${{ secrets.DATABASE_PORT }}
+          DATABASE_SCHEMA: ${{ secrets.DATABASE_SCHEMA }}
+        run: |
+          uv run python manage.py makemigrations accounts
+          uv run python manage.py migrate accounts
+          uv run python manage.py migrate
+          uv run pytest
