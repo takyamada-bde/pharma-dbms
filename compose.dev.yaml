@@ -1,7 +1,7 @@
 services:
   postgres:
     image: tyamadabiodataeng/pharma-dbms-postgres-dev
-    container_name: postgres
+    platform: linux/amd64
     build:
       context: ./postgres
       dockerfile: ../dockerfiles/postgres/Dockerfile
@@ -17,7 +17,7 @@ services:
       - pharmadb-dev-network
   django:
     image: tyamadabiodataeng/pharma-dbms-django-dev
-    container_name: django
+    platform: linux/amd64
     build:
       context: ./app
       dockerfile: ../dockerfiles/django/Dockerfile.dev
@@ -36,7 +36,7 @@ services:
       - pharmadb-dev-network
   nginx:
     image: tyamadabiodataeng/pharma-dbms-nginx
-    container_name: nginx
+    platform: linux/amd64
     build:
       context: ./nginx
       dockerfile: ../dockerfiles/nginx/Dockerfile
@@ -50,11 +50,11 @@ services:
     networks:
       - pharmadb-dev-network
   jupyter:
+    image: tyamadabiodataeng/pharma-dbms-jupyter
+    platform: linux/amd64
     build: 
       context: ./notebooks
       dockerfile: ../dockerfiles/jupyter/Dockerfile
-    image: tyamadabiodataeng/pharma-dbms-jupyter
-    container_name: jupyter
     command: jupyter lab --ip=0.0.0.0 --allow-root --LabApp.token=''
     ports:
      - "8888:8888"
